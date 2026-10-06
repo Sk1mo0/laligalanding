@@ -1,0 +1,41 @@
+ESCUDOS DE LOS EQUIPOS
+======================
+
+La página funciona sin estos archivos (muestra una insignia con las
+iniciales del equipo en sus colores), pero se ve mucho mejor con los
+escudos oficiales.
+
+Cómo agregarlos:
+1. Descarga el escudo oficial de cada club en formato PNG con fondo
+   transparente (Wikipedia, en la ficha de cada club, suele tener uno
+   de buena calidad; también puedes buscar "escudo <equipo> png
+   transparente").
+2. Guarda el archivo en esta carpeta (assets/logos/) con el nombre
+   EXACTO que se indica abajo (todo en minúsculas).
+3. Recarga la página. No hay que tocar nada de código: en cuanto el
+   archivo existe, reemplaza automáticamente a la insignia genérica.
+
+Tamaño recomendado: 256x256 px (cuadrado), fondo transparente.
+
+Nombres de archivo exactos (uno por equipo):
+
+  real-madrid.png
+  barcelona.png
+  atletico-de-madrid.png
+  athletic-club.png
+  valencia.png
+  real-sociedad.png
+  sevilla.png
+  real-betis.png
+  villarreal.png
+  celta-de-vigo.png
+  osasuna.png
+  espanyol.png
+  getafe.png
+  deportivo-alaves.png
+  rayo-vallecano.png
+  deportivo-de-la-coruna.png
+  elche.png
+  levante.png
+  malaga.png
+  real-racing-club.png

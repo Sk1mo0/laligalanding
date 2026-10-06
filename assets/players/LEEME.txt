@@ -1,0 +1,30 @@
+FOTOS DE JUGADORES (sección "Plantilla")
+==========================================
+
+Cada sub-página de equipo tiene una lista de la plantilla (portero,
+defensas, etc.) con foto, número y nombre. Por defecto se generan 5
+filas de EJEMPLO ("Nombre del jugador") porque los datos de la
+plantilla cambian todo el tiempo y no queríamos poner información que
+se desactualice rápido.
+
+Cómo poner la plantilla real de un equipo (2 pasos):
+
+1) Datos (número, nombre, posición):
+   Abre data/teams.js, busca el equipo (por su "slug") y agrégale un
+   campo "roster" con la plantilla real, por ejemplo:
+
+     roster: [
+       { num: 1,  name: "Nombre Apellido", role: "Portero" },
+       { num: 4,  name: "Nombre Apellido", role: "Defensa" },
+       { num: 8,  name: "Nombre Apellido", role: "Centrocampista" },
+       { num: 9,  name: "Nombre Apellido", role: "Delantero" },
+     ],
+
+   Luego vuelve a correr:  node generate.js
+   (esto regenera las 20 sub-páginas con los nuevos datos)
+
+2) Fotos (opcional):
+   Guarda una foto cuadrada por jugador en esta carpeta con el nombre:
+     <slug-del-equipo>-<numero-de-dorsal>.jpg
+   Por ejemplo, para el jugador #9 del Real Madrid: real-madrid-9.jpg
+   Si no agregas la foto, se muestra un ícono de silueta genérico.

@@ -1,0 +1,21 @@
+FOTOS DE CADA EQUIPO (sección "Fieles a los colores")
+=======================================================
+
+Cada sub-página de equipo tiene una sección con 2 fotos en collage
+(afición, festejo, jugada, estadio, lo que tú quieras). Mientras no
+exista el archivo, se muestra un recuadro con textura y el texto
+"Foto pendiente".
+
+Cómo agregarlas:
+1. Consigue 2 fotos por equipo (capturas de partidos, del estadio,
+   celebraciones, etc. — revisa que tengas permiso de uso si es para
+   entregar la actividad).
+2. Guárdalas en esta carpeta con el nombre:
+     <slug-del-equipo>-1.jpg
+     <slug-del-equipo>-2.jpg
+   Por ejemplo, para Real Madrid: real-madrid-1.jpg y real-madrid-2.jpg
+   (los slugs de cada equipo están en data/teams.js).
+3. Recarga la página — no hay que tocar código.
+
+Formato recomendado: orientación vertical (proporción 3:4 aprox.),
+JPG o PNG, buena resolución (al menos 800px de alto).

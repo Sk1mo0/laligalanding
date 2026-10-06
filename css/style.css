@@ -1,0 +1,1035 @@
+/* ==========================================================================
+   style.css — Landing page principal (LaLiga 2026/27)
+   ========================================================================== */
+
+/* ---------- Header / navegación ---------- */
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  z-index: 100;
+  background: rgba(10, 10, 10, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+}
+
+.brand .brand-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 12px var(--gold);
+}
+
+.main-nav ul {
+  display: flex;
+  gap: 34px;
+}
+
+.main-nav a {
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--grey);
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 0.2s ease;
+}
+
+.main-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--gold);
+  transition: width 0.25s ease;
+}
+
+.main-nav a:hover {
+  color: var(--white);
+}
+
+.main-nav a:hover::after {
+  width: 100%;
+}
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 0;
+  color: var(--white);
+  font-size: 1.6rem;
+}
+
+/* ---------- Hero + Balón de Oro 3D ---------- */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  /* overflow NO va hidden aquí a propósito: así el balón (posición
+     absoluta, ver .ballon-stage) puede sobresalir por debajo del hero
+     y quedar "incrustado" bajo la siguiente sección. El watermark de
+     texto gigante se recorta en su propio contenedor (.hero-watermark)
+     para no generar scroll horizontal. */
+  padding: calc(var(--nav-h) + 40px) 24px 120px;
+  background: radial-gradient(
+      ellipse at 50% 0%,
+      rgba(212, 175, 55, 0.14),
+      transparent 60%
+    ),
+    var(--bg);
+}
+
+.hero-watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  overflow: hidden;
+}
+
+.hero-watermark span {
+  font-family: var(--font-display);
+  /* Más grande que antes (tope 11rem -> 13rem) y ahora son 5 líneas en
+     vez de 3 (ver index.html), a pedido: que el fondo del hero quede
+     lleno de letras en vez de tener huecos vacíos grandes entre líneas. */
+  font-size: clamp(3.5rem, 15vw, 13rem);
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.09);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.hero-watermark span:nth-child(even) {
+  align-self: flex-end;
+  -webkit-text-stroke: 1px rgba(212, 175, 55, 0.14);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  margin: 0 auto 510px;
+  /* Reserva el espacio de abajo para que el balón (posición absoluta,
+     ver .ballon-stage, ahora bastante más grande) nunca quede tapando el
+     texto: este margen es lo que separa el final del contenido del borde
+     superior visible del balón, sin importar cómo el flex centre todo el
+     bloque en pantallas más altas o más bajas.
+     Esto es el comportamiento por defecto (móvil/tablet): todo apilado,
+     igual que antes de partir el texto en dos bloques. Los dos hijos
+     .hero-text--left/right no generan ninguna caja propia aquí gracias a
+     "display:contents" más abajo, así que el orden visual sigue siendo
+     exactamente: eyebrow, título, subtítulo, botones, scroll-cue. */
+}
+
+.hero-text--left,
+.hero-text--right {
+  display: contents;
+}
+
+.hero-content .eyebrow {
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+/* ---------- Hero en escritorio: texto a los costados del balón ----------
+   A partir de este ancho ya hay lugar de sobra para que el balón quede
+   "delante", centrado, con el título a su izquierda y el subtítulo/CTA a
+   su derecha — en vez de todo apilado arriba. .hero-content se convierte
+   en una barra absoluta que usa el MISMO bottom/alto que .ballon-stage
+   (ver más abajo), así el centro vertical del texto coincide con el
+   centro vertical del balón sin tener que adivinar números a ojo. */
+@media (min-width: 1180px) {
+  .hero-content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -210px;
+    height: min(96vw, 760px);
+    max-width: none;
+    margin: 0;
+    z-index: 1; /* igual que .ballon-stage: como va después en el HTML, el
+                   balón siempre pinta encima si llegan a tocarse — "el
+                   balón delante" queda garantizado, no solo simulado. */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 0 clamp(24px, 4vw, 96px);
+    pointer-events: none; /* que no tape clics sobre el balón/área central */
+  }
+
+  .hero-text--left,
+  .hero-text--right {
+    display: block;
+    max-width: 380px;
+    pointer-events: auto;
+  }
+
+  .hero-text--left {
+    text-align: right;
+  }
+
+  /* El título (3 líneas fijas, cada una en su propio <span class="line">
+     para el efecto de revelado de Anime.js) se pensó para una columna de
+     760px. Aquí la columna es mucho más angosta, así que con el tamaño
+     original ("los 20 grandes" etc.) cada línea se desbordaba y hasta se
+     salía de la pantalla — se achica el tamaño solo en este layout. */
+  .hero-text--left .hero-title {
+    font-size: clamp(1.7rem, 2.3vw, 2.6rem);
+    line-height: 1.08;
+  }
+
+  .hero-text--right {
+    text-align: left;
+  }
+
+  .hero-content .hero-text--left .eyebrow {
+    justify-content: flex-end;
+  }
+
+  .hero-text--right .hero-sub {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .hero-text--right .hero-cta {
+    justify-content: flex-start;
+  }
+
+  .hero-text--right .scroll-cue {
+    margin-left: 0;
+  }
+}
+
+@media (min-width: 1400px) {
+  .hero-text--left,
+  .hero-text--right {
+    max-width: 430px;
+  }
+
+  .hero-text--left .hero-title {
+    font-size: clamp(2rem, 2.2vw, 2.9rem);
+  }
+}
+
+.hero-title {
+  font-size: clamp(2.6rem, 7vw, 5.2rem);
+  line-height: 0.98;
+}
+
+.hero-title .line {
+  display: block;
+  overflow: hidden;
+}
+
+.hero-title .line span {
+  display: inline-block;
+  will-change: transform;
+}
+
+.hero-title .accent {
+  color: var(--gold);
+}
+
+.hero-sub {
+  margin: 22px auto 0;
+  max-width: 540px;
+  color: var(--grey);
+  font-size: 1.02rem;
+}
+
+.hero-cta {
+  margin-top: 34px;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Contenedor del modelo 3D del Balón de Oro (Sketchfab).
+   Posicionado en absoluto y "colgado" del borde inferior del hero (bottom
+   negativo) a propósito: así la mitad inferior (la base/piedra gris del
+   trofeo) queda tapada por el fondo opaco de la siguiente sección
+   (.liga-info, que tiene z-index mayor) y el balón se ve "incrustado"
+   justo en la costura entre ambas secciones, en vez de flotar completo.
+   Tamaño bastante más grande a pedido (antes tope de 480px). */
+.ballon-stage {
+  position: absolute;
+  left: 50%;
+  bottom: -210px;
+  transform: translateX(-50%);
+  z-index: 1;
+  width: min(96vw, 760px);
+  aspect-ratio: 1 / 1;
+}
+
+.ballon-glow {
+  position: absolute;
+  inset: -10%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(212, 175, 55, 0.28),
+    rgba(212, 175, 55, 0) 70%
+  );
+  filter: blur(6px);
+  z-index: 0;
+  /* Esto es un resplandor DIFUMINADO (blur), no un disco sólido: no debe
+     confundirse con el fondo circular que se quitó de .ballon-3d-inner
+     abajo. Si algún día se quiere aún más "limpio"/sin nada detrás del
+     balón, esta regla se puede borrar completa sin romper nada más. */
+}
+
+.ballon-floor {
+  position: absolute;
+  left: 50%;
+  bottom: 2%;
+  width: 70%;
+  height: 22px;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse,
+    rgba(0, 0, 0, 0.65),
+    rgba(0, 0, 0, 0) 70%
+  );
+  z-index: 0;
+}
+
+/* Perspectiva 3D real (CSS) aplicada al wrapper que anima Anime.js */
+.ballon-3d-wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
+}
+
+/* Antes tenía border-radius:50% + fondo #050505 + borde, o sea un disco
+   oscuro circular donde el modelo quedaba "metido" — se quitó a pedido:
+   ahora es solo un contenedor invisible, sin marco ni fondo propio, así
+   el trofeo se ve flotando directo sobre el fondo de la página.
+   js/ballon3d.js mete aquí dentro un <canvas> de three.js (ver regla de
+   abajo) — no hace falta ningún HTML fijo para el modelo en sí. */
+.ballon-3d-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.ballon-3d-inner canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none; /* para que arrastrar con el dedo gire el modelo y no haga scroll */
+}
+
+/* Indicador simple mientras el modelo (assets/models/ballon-dor.glb)
+   todavía se está leyendo — el <canvas> de three.js arranca transparente,
+   así que sin esto no se ve nada. Va detrás del canvas (z-index menor) y
+   se oculta con JS (js/ballon3d.js) en cuanto el modelo está listo. */
+.ballon-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 0 12%;
+  text-align: center;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.ballon-loader.is-hidden {
+  opacity: 0;
+}
+
+/* Si el modelo no se pudo cargar (ver showLoadError en js/ballon3d.js,
+   típicamente por abrir el archivo con doble clic en vez de por
+   servidor local) el mensaje se queda visible en vez de ocultarse, así
+   que aquí escondemos el spinner giratorio (ya no aplica) y dejamos solo
+   el texto de aviso. */
+.ballon-loader.is-error .ballon-loader-ring {
+  display: none;
+}
+
+.ballon-loader-ring {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 3px solid rgba(212, 175, 55, 0.2);
+  border-top-color: var(--gold);
+  animation: ballonSpin 0.9s linear infinite;
+}
+
+.ballon-loader p {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--grey);
+}
+
+@keyframes ballonSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Ahora en flujo normal (ya no clavado al borde del hero): así nunca
+   queda tapado por el balón, que cuelga por debajo en posición absoluta. */
+.scroll-cue {
+  display: block;
+  margin: 34px auto 0;
+  width: 22px;
+  height: 36px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 20px;
+}
+
+.scroll-cue::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 4px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 2px;
+  transform: translateX(-50%);
+  animation: scrollDot 1.6s ease infinite;
+}
+
+@keyframes scrollDot {
+  0% {
+    opacity: 1;
+    top: 6px;
+  }
+  70% {
+    opacity: 0;
+    top: 18px;
+  }
+  100% {
+    opacity: 0;
+    top: 6px;
+  }
+}
+
+/* ---------- Sección: LaLiga en cifras ---------- */
+.liga-info {
+  position: relative;
+  z-index: 2; /* por encima del hero: tapa la mitad inferior del balón */
+  background: var(--bg-alt);
+  padding: 100px 0 120px;
+}
+
+.liga-info-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.liga-info h2 {
+  font-size: clamp(2rem, 4.4vw, 3rem);
+  margin: 14px 0 20px;
+}
+
+.liga-info p {
+  color: var(--grey);
+  max-width: 46ch;
+}
+
+.liga-info p + p {
+  margin-top: 14px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius);
+  padding: 26px 20px;
+  text-align: center;
+}
+
+.stat-card .stat-num {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  color: var(--gold);
+  line-height: 1;
+}
+
+.stat-card .stat-label {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+
+/* ---------- Sección: Top 4 ---------- */
+.top4 {
+  position: relative;
+  background: var(--bg);
+  padding: 110px 0 120px;
+}
+
+.section-head {
+  max-width: 620px;
+  margin-bottom: 56px;
+}
+
+.section-head h2 {
+  font-size: clamp(2rem, 4.4vw, 3rem);
+  margin-top: 14px;
+}
+
+.section-head p {
+  margin-top: 16px;
+  color: var(--grey);
+}
+
+.top4-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+/* Tarjeta con flip 3D real en CSS (perspective + rotateY) */
+.flip-card {
+  perspective: 1400px;
+  height: 380px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+  border-radius: var(--radius);
+}
+
+.flip-card:hover .flip-card-inner,
+.flip-card:focus-within .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--radius);
+  padding: 26px 22px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.flip-front {
+  background: linear-gradient(160deg, var(--c1, #222), var(--c2, #111));
+  justify-content: space-between;
+}
+
+.flip-front .crest-wrap {
+  width: 84px;
+  height: 84px;
+  margin: 0 auto;
+}
+
+.flip-front h3 {
+  font-size: 1.3rem;
+  text-align: center;
+  margin-top: 18px;
+}
+
+.flip-front .team-category {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.flip-front .flip-cue {
+  align-self: center;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  padding: 6px 14px;
+}
+
+.flip-back {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transform: rotateY(180deg);
+  justify-content: space-between;
+}
+
+.flip-back h4 {
+  font-size: 0.95rem;
+  color: var(--gold);
+}
+
+.flip-back .titles-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.flip-back .titles-mini li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+  padding-bottom: 6px;
+}
+
+.flip-back .titles-mini li b {
+  color: var(--white);
+}
+
+.flip-back .view-link {
+  align-self: flex-start;
+  font-size: 0.78rem;
+  color: var(--gold-light);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------- Sección: Carril de equipos ---------- */
+.equipos-section {
+  position: relative;
+  background: var(--bg-alt);
+  padding: 110px 0 120px;
+}
+
+.carousel-wrap {
+  position: relative;
+}
+
+.carousel-track {
+  display: flex;
+  align-items: flex-start;
+  gap: 26px;
+  overflow-x: auto;
+  /* overflow-y no se puede dejar "visible" de verdad mientras el eje X
+     es scrolleable (el navegador lo fuerza a "auto" igual) — el padding
+     generoso de arriba/abajo es lo que evita que el abanico o el "pop"
+     del hover se corten contra ese límite. */
+  padding: 46px 10px 46px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) transparent;
+  /* La "perspectiva" vive en el contenedor (no en cada tarjeta): así las
+     20 tarjetas comparten un mismo punto de fuga, como si de verdad
+     estuvieran paradas una junto a otra en abanico frente a la cámara,
+     en vez de que cada una se vea "de frente" con su propia perspectiva
+     aislada. */
+  perspective: 1500px;
+}
+
+.carousel-track::-webkit-scrollbar {
+  height: 8px;
+}
+
+.carousel-track::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.5);
+  border-radius: 999px;
+}
+
+/* Tarjeta de equipo, rediseñada como "carta de colección" (a pedido, con
+   un video de referencia: cartas grandes, en abanico, con brillo tipo
+   plástico). Cada tarjeta nace con una inclinación fija de reposo
+   (--fan-rot/--fan-y, calculadas por índice en js/main.js) que la hace
+   parecer parte de una baraja desplegada, y el mouse suma un tilt dinámico
+   encima (--tilt-x/--tilt-y/--pop-*) sin pisar la pose de reposo — por
+   eso el transform final combina ambos grupos de variables en una sola
+   regla en vez de que JS escriba el transform completo. */
+.team-chip {
+  --fan-rot: 0deg;
+  --fan-y: 0px;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --pop-z: 0px;
+  --pop-scale: 1;
+  --glare-x: 50%;
+  --glare-y: 50%;
+
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+  position: relative;
+  width: 222px;
+  height: 320px;
+  border-radius: 20px;
+  overflow: hidden;
+  display: block;
+  text-align: left;
+  color: var(--white);
+  background: linear-gradient(160deg, var(--c1, #222), var(--c2, #111));
+  /* Sin borde a pedido (se veía como un marco de color encima de la
+     foto, tapando parte de la tarjeta) — la sombra de abajo ya le da
+     suficiente definición contra el fondo oscuro. Solo aparece un
+     contorno sutil dorado al pasar el mouse, como affordance. */
+  border: 1px solid transparent;
+  transform-style: preserve-3d;
+  transform:
+    translateY(var(--fan-y))
+    rotateZ(var(--fan-rot))
+    rotateX(var(--tilt-x))
+    rotateY(var(--tilt-y))
+    translateZ(var(--pop-z))
+    scale(var(--pop-scale));
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.4s ease, border-color 0.3s ease, z-index 0s;
+  box-shadow: 0 18px 34px -14px rgba(0, 0, 0, 0.65);
+}
+
+.team-chip:hover,
+.team-chip:focus-visible {
+  z-index: 5; /* que la tarjeta activa quede por encima de sus vecinas del abanico */
+  border-color: rgba(212, 175, 55, 0.55);
+  box-shadow: 0 30px 50px -16px rgba(0, 0, 0, 0.75),
+    0 0 0 1px rgba(212, 175, 55, 0.3);
+}
+
+.team-chip__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.team-chip__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.06);
+  filter: saturate(1.05);
+}
+
+/* Si la foto no carga (onerror en main.js), la tarjeta se queda solo con
+   el degradado de colores del club de fondo — nunca se ve rota. */
+.team-chip__media.no-photo {
+  background: none;
+}
+
+/* Tinte de color del club, MUY sutil: usa mix-blend-mode en vez de un
+   degradado sólido superpuesto — antes ese degradado (var(--c1) a
+   transparent) pintaba media tarjeta de un color plano y se leía como un
+   "marco"/borde encima de la foto, tapándola. Así el color del club se
+   nota como un matiz sobre la foto real, sin ocultarla. */
+.team-chip__tint {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--c1, #222);
+  opacity: 0.22;
+  mix-blend-mode: color;
+  pointer-events: none;
+}
+
+.team-chip__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  /* Solo el degradado oscuro de abajo (para que el nombre/ciudad se lean
+     bien sobre la foto) y un velo parejo arriba para el escudo — nada de
+     color sólido de por medio. */
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.82) 0%,
+    rgba(0, 0, 0, 0.22) 40%,
+    rgba(0, 0, 0, 0.04) 58%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+}
+
+/* Brillo tipo plástico/cristal: una franja diagonal clara que de entrada
+   está fuera de encuadre y se desliza a través de la tarjeta al pasar el
+   mouse — el efecto "carta holográfica" del video de referencia. */
+.team-chip__sheen {
+  position: absolute;
+  inset: -50% -70%;
+  z-index: 3;
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.4) 49%,
+    rgba(255, 255, 255, 0.06) 56%,
+    transparent 64%
+  );
+  transform: translateX(-35%);
+  transition: transform 0.7s ease;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.team-chip:hover .team-chip__sheen {
+  transform: translateX(35%);
+}
+
+/* Reflejo puntual que sigue al cursor (--glare-x/y, actualizadas en
+   main.js), superpuesto para reforzar la sensación de superficie
+   brillante/curva — sutil, solo visible en hover. */
+.team-chip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: radial-gradient(
+    circle at var(--glare-x) var(--glare-y),
+    rgba(255, 255, 255, 0.22),
+    transparent 42%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.team-chip:hover::before {
+  opacity: 1;
+}
+
+.team-chip__top {
+  position: relative;
+  z-index: 5;
+  padding: 18px 0 0 18px;
+}
+
+.team-chip__top .team-chip__crest {
+  width: 56px;
+  height: 56px;
+  margin: 0;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+  transition: transform 0.35s ease;
+}
+
+.team-chip:hover .team-chip__top .team-chip__crest {
+  transform: translateZ(30px) scale(1.06);
+}
+
+.team-chip__body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  padding: 0 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.team-chip__name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  line-height: 1.2;
+  text-transform: uppercase;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.team-chip__city {
+  font-size: 0.7rem;
+  color: rgba(245, 245, 244, 0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.team-chip__cue {
+  margin-top: 10px;
+  align-self: flex-start;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.team-chip:hover .team-chip__cue {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.carousel-controls {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.carousel-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.carousel-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  background: #000;
+  padding: 60px 0 34px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-grid {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.footer-grid p {
+  color: var(--grey);
+  font-size: 0.85rem;
+  max-width: 46ch;
+}
+
+.footer-credits {
+  margin-top: 34px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.75rem;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 980px) {
+  .liga-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .top4-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .main-nav {
+    position: fixed;
+    top: var(--nav-h);
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 10, 0.98);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    transform: translateY(-120%);
+    transition: transform 0.3s ease;
+  }
+
+  .main-nav.open {
+    transform: translateY(0);
+  }
+
+  .main-nav ul {
+    flex-direction: column;
+    padding: 20px 24px 28px;
+    gap: 18px;
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+
+  .flip-card {
+    height: 340px;
+  }
+
+  .ballon-stage {
+    bottom: -95px;
+  }
+
+  .hero {
+    padding-bottom: 90px;
+  }
+
+  .hero-content {
+    /* En móvil el balón ocupa casi todo el ancho de pantalla pero en
+       píxeles reales sigue siendo más chico que en escritorio, así que
+       el margen que le reserva espacio también se reduce — si no, queda
+       un hueco enorme entre el texto y el balón. */
+    margin-bottom: 350px;
+  }
+
+  /* El ángulo de abanico en sí (--fan-rot/--fan-y) se calcula en
+     js/main.js y se manda como inline style por tarjeta — un media query
+     de CSS no lo puede pisar (un inline style siempre gana). Por eso ahí
+     mismo se decide, según el ancho/soporte de hover, dejarlo en 0 para
+     pantallas táctiles (sin hover no hay forma de "enderezar" la
+     tarjeta con el dedo, así que mejor que nazcan derechas). Acá solo
+     achicamos el tamaño de tarjeta para que quepan mejor. */
+  .team-chip {
+    width: 190px;
+    height: 280px;
+  }
+}
+
+@media (max-width: 560px) {
+  .top4-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

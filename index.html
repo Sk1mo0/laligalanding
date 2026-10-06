@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>LaLiga 2026/27 — Historia, cifras y los 20 equipos</title>
+<meta name="description" content="Landing page interactiva 3D sobre LaLiga: historia, estadísticas y los 20 clubes de la temporada 2026/27. Actividad Integradora." />
+
+<!--
+  ACTIVIDAD INTEGRADORA — LANDING PAGE INTERACTIVA 3D
+  Tema asignado: LaLiga (Primera División de España)
+  Tecnologías: HTML5 semántico + CSS3 (transformaciones 3D) + JavaScript
+               + Anime.js (animaciones) + modelo 3D del Balón de Oro
+               renderizado con three.js (WebGL) a partir de un archivo
+               .glb descargado de Sketchfab (assets/models/ballon-dor.glb)
+               — ya NO es un iframe embebido de Sketchfab, es three.js
+               real corriendo directo en esta página.
+  Autor: Adrián — completa aquí tu nombre y grupo antes de entregar.
+
+  Cómo abrir este proyecto: con doble clic en index.html funciona
+  completo, incluido el balón 3D — no hace falta XAMPP ni ningún
+  servidor local. (Al principio el balón SÍ lo necesitaba, porque
+  Chrome/Edge bloquean que una página cargue OTRO archivo local por su
+  cuenta bajo file://; se resolvió incrustando el modelo como texto en
+  assets/models/ballon-dor.glb.b64.js, que si se puede cargar por doble
+  clic sin problema. Ver la explicación completa en js/ballon3d.js.)
+-->
+
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<a class="visually-hidden" href="#inicio">Saltar al contenido</a>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="brand" aria-label="LaLiga 26/27 — inicio">
+      <span class="brand-dot" aria-hidden="true"></span>
+      LaLiga <span style="color:var(--gold)">26/27</span>
+    </a>
+
+    <nav class="main-nav" id="mainNav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#liga">La Liga</a></li>
+        <li><a href="#top4">Los Grandes</a></li>
+        <li><a href="#equipos">Equipos</a></li>
+      </ul>
+    </nav>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mainNav">☰</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============================= HERO ============================= -->
+  <section class="hero" id="inicio">
+    <!-- Más líneas que antes (eran 3) a pedido: en el hero (100svh, bien
+         alto) quedaban muy separadas entre sí con harto espacio vacío en
+         medio — con más líneas y un poco más grandes (ver css/style.css)
+         el texto de fondo cubre mucho más del alto de la sección. -->
+    <div class="hero-watermark" aria-hidden="true">
+      <span>LALIGA</span>
+      <span>ESPAÑA</span>
+      <span>LALIGA</span>
+      <span>ESPAÑA</span>
+      <span>LALIGA</span>
+    </div>
+
+    <!-- El texto del hero se partió en dos bloques (izquierda/derecha) a
+         pedido: en escritorio quedan a los costados del balón (que queda
+         "delante", en medio) en vez de apilados arriba. En móvil no hay
+         espacio para eso, así que .hero-text--left/right vuelven a
+         apilarse igual que antes (ver la regla por defecto en style.css,
+         que usa display:contents para que no se note el envoltorio extra;
+         el layout de dos columnas solo se activa desde cierto ancho). -->
+    <div class="hero-content">
+      <div class="hero-text hero-text--left">
+        <p class="eyebrow">Temporada 2026 / 27</p>
+        <h1 class="hero-title" id="heroTitle">
+          <span class="line"><span>La historia,</span></span>
+          <span class="line"><span>la pasión y</span></span>
+          <span class="line"><span class="accent">los 20 grandes</span></span>
+        </h1>
+      </div>
+
+      <div class="hero-text hero-text--right">
+        <p class="hero-sub">
+          Un recorrido interactivo por la liga de fútbol más seguida del mundo:
+          su historia, sus cifras y los clubes que la construyeron,
+          temporada tras temporada.
+        </p>
+        <div class="hero-cta">
+          <a href="#equipos" class="btn btn--gold">Explorar los 20 equipos</a>
+          <a href="#liga" class="btn">LaLiga en cifras</a>
+        </div>
+
+        <!-- La línea de atribución y la pista de "gira el trofeo" que antes
+             iban aquí arriba del balón se quitaron a pedido (quedaban justo
+             encima del modelo, ahora mucho más grande, y se veían de más).
+             OJO: la atribución del modelo SIGUE siendo obligatoria por su
+             licencia — por eso no se borró, solo se movió: ya está en el
+             <footer> de esta misma página ("Créditos del modelo 3D"). No
+             quites esa del footer. -->
+
+        <span class="scroll-cue" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <!-- ===================================================================
+         MODELO 3D — Balón de Oro, renderizado con three.js
+         Ya NO es un iframe de Sketchfab: js/ballon3d.js carga el archivo
+         assets/models/ballon-dor.glb directo con three.js y lo dibuja
+         dentro de #ballonInner (un <canvas> que ese script crea solo, no
+         hace falta tocar este HTML). Así no aparece ninguna barra/UI
+         ajena encima del modelo — es 100% nuestro.
+
+         Posicionado en absoluto (ver .ballon-stage en css/style.css) para
+         que quede "incrustado": la mitad de abajo (la base gris del
+         trofeo) cuelga por detrás de la siguiente sección a propósito.
+         El wrapper .ballon-3d-wrap se anima con Anime.js (flotación) en
+         js/main.js — eso sigue igual.
+
+         El giro ahora se limita con OrbitControls de three.js
+         (minPolarAngle = maxPolarAngle): es una función real y estable
+         de la librería, no un ajuste manual — el usuario puede girarlo
+         de lado a lado y hacer zoom, pero es IMPOSIBLE inclinarlo hacia
+         arriba/abajo, sin trucos ni casos raros.
+
+         #ballonLoader: mientras el .glb todavía se está leyendo, aquí no
+         hay nada visible (el <canvas> arranca transparente) — este
+         indicador simple llena ese hueco y se oculta solo (js/ballon3d.js)
+         en cuanto el modelo ya está listo para verse.
+    ==================================================================== -->
+    <div class="ballon-stage" id="ballonStage">
+      <div class="ballon-glow" aria-hidden="true"></div>
+      <div class="ballon-floor" aria-hidden="true"></div>
+
+      <div class="ballon-loader" id="ballonLoader" aria-hidden="true">
+        <span class="ballon-loader-ring"></span>
+        <p id="ballonLoaderText">Cargando el trofeo…</p>
+      </div>
+
+      <div class="ballon-3d-wrap" id="ballonWrap">
+        <div class="ballon-3d-inner" id="ballonInner"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= LALIGA EN CIFRAS ========================= -->
+  <section class="liga-info torn-edge" id="liga" style="--tear-color: var(--bg-alt);">
+    <div class="container liga-info-grid">
+      <div>
+        <p class="eyebrow">Un siglo de fútbol</p>
+        <h2>De 1929 a hoy: la historia de LaLiga</h2>
+        <p>
+          LaLiga nació en 1929 como la primera competición de liga de fútbol
+          en España, con diez clubes fundadores. Desde entonces se ha
+          convertido en una de las ligas más competitivas y seguidas del
+          mundo, cuna de algunos de los futbolistas más determinantes de la
+          historia y escenario de rivalidades históricas como El Clásico
+          (Real Madrid–FC Barcelona) o el Derbi Madrileño.
+        </p>
+        <p>
+          Solo tres clubes —Real Madrid, FC Barcelona y Athletic Club— han
+          disputado todas las temporadas de la competición sin descender
+          jamás de Primera División, un símbolo de la exigencia de esta liga.
+        </p>
+      </div>
+
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <p class="stat-num" data-count="1929" data-format="year">0</p>
+          <p class="stat-label">Año de fundación</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-num" data-count="20">0</p>
+          <p class="stat-label">Clubes en Primera</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-num" data-count="38">0</p>
+          <p class="stat-label">Jornadas por temporada</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-num" data-count="9">0</p>
+          <p class="stat-label">Clubes campeones distintos en la historia</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== TOP 4 ============================== -->
+  <section class="top4" id="top4">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Los grandes de LaLiga</p>
+        <h2>Cuatro escudos, un siglo de historia</h2>
+        <p>
+          Real Madrid, FC Barcelona, Atlético de Madrid y Athletic Club
+          concentran gran parte del palmarés histórico de la competición.
+          Pasa el cursor (o toca en móvil) sobre cada tarjeta para voltearla.
+        </p>
+      </div>
+
+      <!-- Tarjetas con flip 3D real en CSS (perspective + rotateY),
+           generadas dinámicamente desde data/teams.js -->
+      <div class="top4-grid" id="top4Grid"></div>
+    </div>
+  </section>
+
+  <!-- =========================== CARRIL DE EQUIPOS =========================== -->
+  <section class="equipos-section torn-edge" id="equipos" style="--tear-color:#000;">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Temporada 2026 / 27</p>
+        <h2>Los 20 equipos de LaLiga</h2>
+        <p>
+          Haz clic en cualquier escudo para abrir su página completa: historia,
+          títulos y datos del club.
+        </p>
+      </div>
+
+      <div class="carousel-wrap">
+        <!-- Carril generado dinámicamente desde data/teams.js.
+             Cada tarjeta enlaza a equipos/<slug>.html -->
+        <div class="carousel-track" id="carouselTrack"></div>
+
+        <div class="carousel-controls">
+          <button class="carousel-btn" id="prevBtn" aria-label="Ver equipos anteriores">‹</button>
+          <button class="carousel-btn" id="nextBtn" aria-label="Ver equipos siguientes">›</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <p class="brand" style="margin-bottom:10px;">LaLiga <span style="color:var(--gold)">26/27</span></p>
+        <p>Proyecto escolar — Actividad Integradora: Landing Page Interactiva 3D. Contenido histórico y estadístico con fines educativos.</p>
+      </div>
+      <div>
+        <p class="eyebrow" style="margin-bottom:10px;">Créditos del modelo 3D</p>
+        <p>
+          "BALLON D'OR" por
+          <a href="https://sketchfab.com/tahahosseini" target="_blank" rel="nofollow noopener" style="color:var(--gold-light); font-weight:700;">tahahosseini</a>,
+          vía <a href="https://sketchfab.com/3d-models/ballon-dor-31aa899c67a74d1aad94e7ec62b39dac" target="_blank" rel="nofollow noopener" style="color:var(--gold-light); font-weight:700;">Sketchfab</a>,
+          licencia <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="nofollow noopener" style="color:var(--gold-light); font-weight:700;">CC Attribution (CC-BY-4.0)</a>.
+        </p>
+      </div>
+    </div>
+    <div class="footer-credits">
+      <span>Actividad Integradora · LaLiga 2026/27</span>
+      <span>Construido con HTML5, CSS3 3D y Anime.js</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/vendor/anime.min.js"></script>
+<script src="data/teams-browser.js"></script>
+<script src="js/main.js"></script>
+
+<!-- El modelo 3D del Balón de Oro, incrustado como texto (base64) en vez
+     de quedar como archivo .glb suelto — así el navegador no necesita
+     pedirlo por separado con fetch, que es justo lo que bloquea al abrir
+     la página con doble clic (file://). Ver la explicación completa al
+     inicio de js/ballon3d.js. Tiene que ir ANTES de ballon3d.bundle.js. -->
+<script src="assets/models/ballon-dor.glb.b64.js"></script>
+
+<!-- Visor 3D del trofeo (three.js + GLTFLoader + OrbitControls), ya
+     EMPAQUETADO en un solo archivo clásico con esbuild — el código fuente
+     real es js/ballon3d.js (más legible, con todos los comentarios), pero
+     ese archivo usa `import`/módulos de JS, y los navegadores bloquean
+     TAMBIÉN los <script type="module"> al abrir una página con doble
+     clic (file://) — no solo el fetch de archivos sueltos. Empaquetado
+     así, como <script> normal, no tiene ese problema y funciona igual
+     por servidor local o por doble clic. Si algún día editas
+     js/ballon3d.js, hay que regenerar este bundle — ver README.md. -->
+<script src="js/ballon3d.bundle.js"></script>
+</body>
+</html>

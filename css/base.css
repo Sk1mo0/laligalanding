@@ -1,0 +1,251 @@
+/* ==========================================================================
+   base.css — Reset, variables y utilidades compartidas
+   Usado por la landing page (style.css) y por las sub-páginas (equipo.css)
+   ========================================================================== */
+
+:root {
+  --bg: #0a0a0a;
+  --bg-alt: #141414;
+  --bg-card: #1b1b1b;
+  --white: #f5f5f4;
+  --grey: #9a9a9a;
+  --grey-dark: #2a2a2a;
+  --gold: #d4af37;
+  --gold-light: #f4d675;
+  --red: #e63946;
+
+  --font-display: "Arial Black", "Archivo Black", Impact, "Haettenschweiler",
+    "Franklin Gothic Bold", sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+
+  --radius: 14px;
+  --container: 1180px;
+  --nav-h: 76px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  background: var(--gold);
+  display: inline-block;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 26px;
+  border-radius: 999px;
+  border: 2px solid var(--white);
+  background: transparent;
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.btn:hover {
+  background: var(--white);
+  color: var(--bg);
+  transform: translateY(-2px);
+}
+
+.btn--gold {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.btn--gold:hover {
+  background: var(--gold);
+  color: #1a1400;
+}
+
+/* Fallback de escudo: se usa mientras Adrián no haya puesto la imagen real.
+   Ver assets/logos/README.txt para instrucciones detalladas. */
+.crest-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  background: radial-gradient(
+    circle at 30% 25%,
+    var(--c1, #444),
+    var(--c2, #111) 75%
+  );
+  border: 2px solid rgba(255, 255, 255, 0.25);
+}
+
+/* Placeholder genérico de foto (jugadores, estadio, colage). Ver comentarios
+   detallados en cada plantilla / README para el proceso de reemplazo. */
+.photo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.06) 10px,
+    rgba(255, 255, 255, 0.02) 10px,
+    rgba(255, 255, 255, 0.02) 20px
+  );
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.75rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 10px;
+}
+
+.photo-placeholder svg {
+  width: 28px;
+  height: 28px;
+  opacity: 0.5;
+}
+
+/* Bordes de "papel rasgado" reutilizables entre secciones, inspirados en el
+   moodboard que compartió Adrián. --tear-color define el color del "diente"
+   (debe ser igual al fondo de la sección que sigue). */
+.torn-edge {
+  position: relative;
+}
+
+.torn-edge::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 34px;
+  background: var(--tear-color, var(--bg));
+  clip-path: polygon(
+    0% 100%,
+    0% 40%,
+    4% 65%,
+    8% 20%,
+    12% 70%,
+    16% 30%,
+    20% 80%,
+    24% 15%,
+    28% 60%,
+    32% 25%,
+    36% 75%,
+    40% 10%,
+    44% 65%,
+    48% 35%,
+    52% 85%,
+    56% 20%,
+    60% 70%,
+    64% 30%,
+    68% 80%,
+    72% 15%,
+    76% 60%,
+    80% 25%,
+    84% 75%,
+    88% 20%,
+    92% 65%,
+    96% 30%,
+    100% 60%,
+    100% 100%
+  );
+}
+
+@media (max-width: 640px) {
+  .torn-edge::after {
+    height: 22px;
+  }
+}
